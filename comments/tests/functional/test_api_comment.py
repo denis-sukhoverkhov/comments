@@ -73,37 +73,41 @@ class CreateCommentApiTest(TestCase):
 
     def test_get_comments_for_entity_post(self):
         post = Post.objects.create(title='custom title', body='body')
+        c_type = ContentType.objects.get_for_model(post)
         child1 = Comment.objects.create(body='child1',
                                         user=self.authorized_user,
-                                        content_type=ContentType.objects.get_for_model(post),
+                                        content_type=c_type,
                                         object_id=post.id)
         child2 = Comment.objects.create(body='child2',
                                         user=self.authorized_user,
-                                        content_type=ContentType.objects.get_for_model(post),
+                                        content_type=c_type,
                                         object_id=post.id)
         child3 = Comment.objects.create(body='child3',
                                         user=self.authorized_user,
-                                        content_type=ContentType.objects.get_for_model(post),
+                                        content_type=c_type,
                                         object_id=post.id)
 
-        response = self.client.get(f'/api/post/{post.id}/post/')
+        response = self.client.get(f'/api/post/{post.id}/comment/')
         child_list = [child1, child2, child3]
         self.assertEqual(len(response.data), len(child_list))
 
-    # def test_get_comments_for_entity_user(self):
-    #     # content_type = ContentType.objects.get_for_model(Post)
-    #     # post = Post.objects.create(title='custom title', body='body')
-    #     # data = {'body': 'interesting',
-    #     #         'user': self.authorized_user.id,
-    #     #         'content_type': content_type.id,
-    #     #         'object_id': post.id,
-    #     #         }
-    #     response = self.client.post(f'/api/user/{user_id}/comment/', data, format='json')
-    #     # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     # result = response.data
-    #     # # pass
-    #     # self.assertEqual(result['body'], data['body'])
-    #     # self.assertEqual(result['user'], data['user'])
-    #     # self.assertEqual(result['content_type'], data['content_type'])
-    #     # self.assertEqual(result['object_id'], data['object_id'])
-    #     # self.assertTrue('created' in result)
+    def test_get_comments_for_entity_user(self):
+        another_user = User.objects.create(username='user',
+                                           password='user',
+                                           email='user@mail.ru')
+        c_type = ContentType.objects.get_for_model(another_user)
+        child1 = Comment.objects.create(body='child1',
+                                        user=self.authorized_user,
+                                        content_type=c_type,
+                                        object_id=another_user.id)
+        child2 = Comment.objects.create(body='child2',
+                                        user=self.authorized_user,
+                                        content_type=c_type,
+                                        object_id=another_user.id)
+        child3 = Comment.objects.create(body='child3',
+                                        user=self.authorized_user,
+                                        content_type=c_type,
+                                        object_id=another_user.id)
+        response = self.client.get(f'/api/user/{another_user.id}/comment/')
+        child_list = [child1, child2, child3]
+        self.assertEqual(len(response.data), len(child_list))
