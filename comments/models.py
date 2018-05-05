@@ -15,7 +15,21 @@ class Comment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    class Meta:
+        verbose_name = _('Comment')
+        verbose_name_plural = _('Comments')
+
+    def __str__(self):
+        return self.body[0:100]
+
 
 class Post(models.Model):
     title = models.CharField('Title', max_length=100)
     body = models.TextField('Body')
+
+    class Meta:
+        verbose_name = _('Post')
+        verbose_name_plural = _('Posts')
+
+    def __str__(self):
+        return self.title

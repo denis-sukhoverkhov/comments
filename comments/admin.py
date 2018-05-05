@@ -9,4 +9,4 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('parent', 'user', 'created')
+    list_display = ('parent', 'user', 'content_type', 'created')
