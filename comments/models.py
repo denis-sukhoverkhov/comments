@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 
 
 class Comment(models.Model):
+    body = models.TextField(verbose_name='Body')
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='User')
     created = models.DateTimeField(default=now, verbose_name=_('Date created'))
     parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.PROTECT, verbose_name='Parent')
@@ -17,4 +18,4 @@ class Comment(models.Model):
 
 class Post(models.Model):
     title = models.CharField('Title', max_length=100)
-    text = models.TextField('Text')
+    body = models.TextField('Body')
