@@ -23,7 +23,10 @@
 3. Create db `createdb comments`
 4. Create tables `venv/bin/python3.6 manage.py migrate`
 
-## Run
+## Run tests
+`venv/bin/python3.6 manage.py test .`
+
+## Run project
 1. `venv/bin/python3.6 manage.py runserver 8000`
 2. Open in browser [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
