@@ -14,7 +14,6 @@ class Comment(models.Model):
     body = models.TextField(verbose_name='Body')
     user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='User')
     created = models.DateTimeField(default=now, verbose_name=_('Date created'))
-    parent = models.ForeignKey('self', blank=True, null=True, on_delete=models.PROTECT, verbose_name='Parent')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
