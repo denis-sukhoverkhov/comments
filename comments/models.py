@@ -24,8 +24,8 @@ class Comment(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField('Title', max_length=100)
-    body = models.TextField('Body')
+    title = models.CharField('Title', max_length=100, blank=False)
+    body = models.TextField('Body', blank=False)
 
     class Meta:
         verbose_name = _('Post')
