@@ -7,13 +7,12 @@ from django.db import IntegrityError
 
 class CommentModelTest(TestCase):
     def setUp(self):
-        user = User.objects.create(username='admin',
-                                   password='admin',
-                                   email='admin@mail.ru',
-                                   is_active=True,
-                                   is_staff=True,
-                                   is_superuser=True)
-        self.authorized_user = user
+        self.authorized_user = User.objects.create(username='admin',
+                                                   password='admin',
+                                                   email='admin@mail.ru',
+                                                   is_active=True,
+                                                   is_staff=True,
+                                                   is_superuser=True)
 
     def test_create_comment_without_binding_to_entity(self):
         with self.assertRaises(IntegrityError) as exc:
@@ -98,9 +97,9 @@ class CommentModelTest(TestCase):
                                           object_id=post.id)
 
         Comment.objects.create(body='com2',
-                                    user=self.authorized_user,
-                                    content_type=ContentType.objects.get_for_model(comment1),
-                                    object_id=comment1.id)
+                               user=self.authorized_user,
+                               content_type=ContentType.objects.get_for_model(comment1),
+                               object_id=comment1.id)
 
         with self.assertRaises(Exception) as exc:
             comment1.delete()
