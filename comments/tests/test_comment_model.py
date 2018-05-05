@@ -88,3 +88,19 @@ class CommentModelTest(TestCase):
 
         self.assertEqual(comment2.content_object.id, comment1.id)
         self.assertEqual(comment3.content_object.id, comment2.id)
+
+    def test_try_to_remove_comment_with_child_comment(self):
+        post = Post.objects.create(title='custom title', body='body')
+        c_type = ContentType.objects.get_for_model(post)
+        comment1 = Comment.objects.create(body='com1',
+                                          user=self.authorized_user,
+                                          content_type=c_type,
+                                          object_id=post.id)
+
+        Comment.objects.create(body='com2',
+                                    user=self.authorized_user,
+                                    content_type=ContentType.objects.get_for_model(comment1),
+                                    object_id=comment1.id)
+
+        with self.assertRaises(Exception) as exc:
+            comment1.delete()

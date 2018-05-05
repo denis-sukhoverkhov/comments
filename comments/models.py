@@ -1,9 +1,13 @@
+import logging
+
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
+
+logger = logging.getLogger(__name__)
 
 
 class Comment(models.Model):
@@ -21,6 +25,17 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.body[0:100]
+
+    def delete(self, using=None, keep_parents=False):
+        # before delete - need check existing child node
+        is_exists_child_comment = Comment.objects.filter(object_id=self.id,
+                                                         content_type=ContentType.objects.get_for_model(Comment)).exists()
+        if is_exists_child_comment:
+            message = f'You can not delete this comment, it has a child comments'
+            logger.error(message)
+            raise Exception(message)
+
+        super().delete(using, keep_parents)
 
 
 class Post(models.Model):
