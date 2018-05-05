@@ -29,6 +29,9 @@
 ## Run project
 1. `venv/bin/python3.6 manage.py runserver 8000`
 2. Open in browser [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+### About interface
++ [Create new comment](http://127.0.0.1:8000/api/comment/)
+ 
 
 ## For developers
 + Update requirements - `venv/bin/pip3.6 freeze > requirements.txt`
