@@ -44,7 +44,11 @@
     + user - [http://127.0.0.1:8000/api/comment/tree/?entity=user&object_id=2](http://127.0.0.1:8000/api/comment/tree/?entity=user&object_id=2)
 + Get user history by comments - [http://127.0.0.1:8000/api/user/2/comment/history/'](http://127.0.0.1:8000/api/user/2/comment/history/')
 + Export user history to csv - [http://127.0.0.1:8000/api/user/2/comment/history/export/](http://127.0.0.1:8000/api/user/2/comment/history/export/)
- 
+
+### Some interfaces in Django admin
++ CRUD for comments - [http://127.0.0.1:8000/admin/comments/comment/](http://127.0.0.1:8000/admin/comments/comment/)
++ CRUD for users - [http://127.0.0.1:8000/admin/auth/user/](http://127.0.0.1:8000/admin/auth/user/)
++ CRUD for posts - [http://127.0.0.1:8000/admin/comments/post/](http://127.0.0.1:8000/admin/comments/post/)
 
 ## For developers
 + Update requirements - `venv/bin/pip3.6 freeze > requirements.txt`
