@@ -86,7 +86,6 @@ class UserHistoryCommentList(generics.ListAPIView):
     pagination_class = ResultsSetPagination
 
     def get_queryset(self):
-        # slug = self.kwargs.get('slug', None)
         pk = self.kwargs.get('pk', None)
         return Comment.objects.filter(user=pk)
 
