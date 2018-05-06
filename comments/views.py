@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from .libs.misc import dict_fetchall
 
 from comments.models import Comment, Post
-from comments.serrializers import CommentSerializer
+from comments.serrializers import CommentSerializer, HistoryCommentSerializer
 
 
 class ResultsSetPagination(PageNumberPagination):
@@ -73,3 +73,13 @@ ORDER BY level, object_id
             cursor.execute(raw_sql)
             res = dict_fetchall(cursor)
         return Response(res)
+
+
+class UserHistoryCommentList(generics.ListAPIView):
+    serializer_class = HistoryCommentSerializer
+    pagination_class = ResultsSetPagination
+
+    def get_queryset(self):
+        # slug = self.kwargs.get('slug', None)
+        pk = self.kwargs.get('pk', None)
+        return Comment.objects.filter(user=pk)
