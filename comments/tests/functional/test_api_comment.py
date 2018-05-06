@@ -44,9 +44,10 @@ class CreateCommentApiTest(TestCase):
                                                 user=self.authorized_user,
                                                 content_type=c_type,
                                                 object_id=post.id)
-        response = self.client.get(f'/api/comment/{parent_comment.id}/comment/')
+        response = self.client.get(f'/api/comment/comment/{parent_comment.id}/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
+        res = response.data['results']
+        self.assertEqual(res, [])
 
     def test_get_comments_for_entity_comment_if_child_comments_exists(self):
         post = Post.objects.create(title='custom title', body='body')
@@ -67,9 +68,9 @@ class CreateCommentApiTest(TestCase):
                                         user=self.authorized_user,
                                         content_type=c_type,
                                         object_id=parent_comment.id)
-        response = self.client.get(f'/api/comment/{parent_comment.id}/comment/')
+        response = self.client.get(f'/api/comment/comment/{parent_comment.id}/')
         child_list = [child1, child2, child3]
-        self.assertEqual(len(response.data), len(child_list))
+        self.assertEqual(len(response.data['results']), len(child_list))
 
     def test_get_comments_for_entity_post(self):
         post = Post.objects.create(title='custom title', body='body')
@@ -87,9 +88,9 @@ class CreateCommentApiTest(TestCase):
                                         content_type=c_type,
                                         object_id=post.id)
 
-        response = self.client.get(f'/api/post/{post.id}/comment/')
+        response = self.client.get(f'/api/comment/post/{post.id}/')
         child_list = [child1, child2, child3]
-        self.assertEqual(len(response.data), len(child_list))
+        self.assertEqual(len(response.data['results']), len(child_list))
 
     def test_get_comments_for_entity_user(self):
         another_user = User.objects.create(username='user',
@@ -108,6 +109,6 @@ class CreateCommentApiTest(TestCase):
                                         user=self.authorized_user,
                                         content_type=c_type,
                                         object_id=another_user.id)
-        response = self.client.get(f'/api/user/{another_user.id}/comment/')
+        response = self.client.get(f'/api/comment/user/{another_user.id}/')
         child_list = [child1, child2, child3]
-        self.assertEqual(len(response.data), len(child_list))
+        self.assertEqual(len(response.data['results']), len(child_list))
