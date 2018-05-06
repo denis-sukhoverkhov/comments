@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.contrib import admin
 
-from comments.views import CommentList, CommentCreate, RecursivelyCommentList, UserHistoryCommentList
+from comments.views import CommentList, CommentCreate, RecursivelyCommentList, UserHistoryCommentList, \
+    streaming_csv_view
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -9,4 +10,5 @@ urlpatterns = [
     url(r'^api/comment/$', CommentCreate.as_view(), name='create-comment'),
     url(r'^api/comment/tree/$', RecursivelyCommentList.as_view(), name='recursively-comments'),
     url(r'^api/user/(?P<pk>[0-9]+)/comment/history/$', UserHistoryCommentList.as_view(), name='history-comments'),
+    url(r'^api/user/(?P<pk>[0-9]+)/comment/history/export/$', streaming_csv_view, name='export-comments'),
 ]

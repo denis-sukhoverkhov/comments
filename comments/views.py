@@ -1,14 +1,18 @@
+import csv
+import datetime
+
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import connection
-from rest_framework import generics, permissions, authentication, serializers
+from django.http import StreamingHttpResponse
+from rest_framework import generics, permissions, serializers
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .libs.misc import dict_fetchall
 
 from comments.models import Comment, Post
 from comments.serrializers import CommentSerializer, HistoryCommentSerializer
+from .libs.misc import dict_fetchall
 
 
 class ResultsSetPagination(PageNumberPagination):
@@ -84,3 +88,38 @@ class UserHistoryCommentList(generics.ListAPIView):
         # slug = self.kwargs.get('slug', None)
         pk = self.kwargs.get('pk', None)
         return Comment.objects.filter(user=pk)
+
+
+class Echo:
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
+def streaming_csv_view(request, pk):
+    """A view that streams a large CSV file."""
+
+    date_start = request.GET.get('date_start', None)
+    date_end = request.GET.get('date_end', None)
+    comment_qs = Comment.objects.filter(user_id=pk)
+    if date_start:
+        date_start = datetime.datetime.strptime(date_start, '%d.%m.%Y')
+        comment_qs.filter(created__gte=date_start)
+    if date_end:
+        date_end = datetime.datetime.strptime(date_end, '%d.%m.%Y')
+        date_end = date_end.replace(hour=23, minute=59, second=59)
+        comment_qs.filter(created__lte=date_end)
+
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow((idx,
+                                                       obj.id,
+                                                       obj.body,
+                                                       obj.user.username,
+                                                       obj.created)) for idx, obj in enumerate(comment_qs)),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = f'attachment; filename="export_comments_user_{pk}_{datetime.datetime.now()}.csv"'
+    return response

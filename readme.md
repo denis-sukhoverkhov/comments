@@ -39,9 +39,11 @@
     + user - [http://127.0.0.1:8000/api/comment/user/2/](http://127.0.0.1:8000/api/comment/user/2/) where 
     `user` - it is entity identifier and `2` - it is id of entity 
 + Get comments recursively for three entities:
-    + comment - [/api/comment/tree/?entity=comment&object_id=2](/api/comment/tree/?entity=comment&object_id=2)
-    + post - [/api/comment/tree/?entity=post&object_id=2](/api/comment/tree/?entity=post&object_id=2)
-    + user - [/api/comment/tree/?entity=user&object_id=2](/api/comment/tree/?entity=user&object_id=2)
+    + comment - [http://127.0.0.1:8000/api/comment/tree/?entity=comment&object_id=2](http://127.0.0.1:8000/api/comment/tree/?entity=comment&object_id=2)
+    + post - [http://127.0.0.1:8000/api/comment/tree/?entity=post&object_id=2](http://127.0.0.1:8000/api/comment/tree/?entity=post&object_id=2)
+    + user - [http://127.0.0.1:8000/api/comment/tree/?entity=user&object_id=2](http://127.0.0.1:8000/api/comment/tree/?entity=user&object_id=2)
++ Get user history by comments - [http://127.0.0.1:8000/api/user/2/comment/history/'](http://127.0.0.1:8000/api/user/2/comment/history/')
++ Export user history to csv - [http://127.0.0.1:8000/api/user/2/comment/history/export/](http://127.0.0.1:8000/api/user/2/comment/history/export/)
  
 
 ## For developers
