@@ -38,6 +38,10 @@
     `post` - it is entity identifier and `2` - it is id of entity
     + user - [http://127.0.0.1:8000/api/comment/user/2/](http://127.0.0.1:8000/api/comment/user/2/) where 
     `user` - it is entity identifier and `2` - it is id of entity 
++ Get comments recursively for three entities:
+    + comment - [/api/comment/tree/?entity=comment&object_id=2](/api/comment/tree/?entity=comment&object_id=2)
+    + post - [/api/comment/tree/?entity=post&object_id=2](/api/comment/tree/?entity=post&object_id=2)
+    + user - [/api/comment/tree/?entity=user&object_id=2](/api/comment/tree/?entity=user&object_id=2)
  
 
 ## For developers
