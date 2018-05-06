@@ -43,7 +43,8 @@
     + post - [http://127.0.0.1:8000/api/comment/tree/?entity=post&object_id=2](http://127.0.0.1:8000/api/comment/tree/?entity=post&object_id=2)
     + user - [http://127.0.0.1:8000/api/comment/tree/?entity=user&object_id=2](http://127.0.0.1:8000/api/comment/tree/?entity=user&object_id=2)
 + Get user history by comments - [http://127.0.0.1:8000/api/user/2/comment/history/'](http://127.0.0.1:8000/api/user/2/comment/history/')
-+ Export user history to csv - [http://127.0.0.1:8000/api/user/2/comment/history/export/](http://127.0.0.1:8000/api/user/2/comment/history/export/)
++ Export user history to csv - [http://127.0.0.1:8000/api/user/2/comment/history/export/csv/](http://127.0.0.1:8000/api/user/2/comment/history/export/csv/)
++ Export user history to xml - [http://127.0.0.1:8000/api/user/2/comment/history/export/xml/](http://127.0.0.1:8000/api/user/2/comment/history/export/xml/)
 
 ### Some interfaces in Django admin
 + CRUD for comments - [http://127.0.0.1:8000/admin/comments/comment/](http://127.0.0.1:8000/admin/comments/comment/)

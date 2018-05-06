@@ -1,4 +1,5 @@
 import csv
+import xml
 import datetime
 
 from django.contrib.auth.models import User
@@ -94,14 +95,35 @@ class Echo:
     """An object that implements just the write method of the file-like
     interface.
     """
+
     def write(self, value):
         """Write the value by returning it, instead of storing in a buffer."""
         return value
 
 
-def streaming_csv_view(request, pk):
-    """A view that streams a large CSV file."""
+def echo_xml(item):
+    template = \
+        f"""<comment>
+  <id>{item.id}</id>
+  <user>{item.user.username}</user>
+  <body>{item.body}</body>
+  <created>{item.created}</created>
+</comment>
+"""
+    return template
 
+
+def gen_xml(qs):
+    for idx, item in enumerate(qs):
+        if idx == 0:
+            yield '<comments>\n' + echo_xml(item)
+        else:
+            yield echo_xml(item)
+    else:
+        yield '</comments>'
+
+
+def streaming_csv_view(request, pk, format_export):
     date_start = request.GET.get('date_start', None)
     date_end = request.GET.get('date_end', None)
     comment_qs = Comment.objects.filter(user_id=pk)
@@ -113,13 +135,22 @@ def streaming_csv_view(request, pk):
         date_end = date_end.replace(hour=23, minute=59, second=59)
         comment_qs.filter(created__lte=date_end)
 
-    pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
-    response = StreamingHttpResponse((writer.writerow((idx,
-                                                       obj.id,
-                                                       obj.body,
-                                                       obj.user.username,
-                                                       obj.created)) for idx, obj in enumerate(comment_qs)),
-                                     content_type="text/csv")
-    response['Content-Disposition'] = f'attachment; filename="export_comments_user_{pk}_{datetime.datetime.now()}.csv"'
+    if format_export == 'xml':
+        response = StreamingHttpResponse(gen_xml(comment_qs), content_type='application/xml')
+        response[
+            'Content-Disposition'] = f'attachment; filename="export_comments_user_{pk}_{datetime.datetime.now()}.xml"'
+    elif format_export == 'csv':
+        pseudo_buffer = Echo()
+        writer = csv.writer(pseudo_buffer)
+        response = StreamingHttpResponse((writer.writerow((idx,
+                                                           obj.id,
+                                                           obj.body,
+                                                           obj.user.username,
+                                                           obj.created)) for idx, obj in enumerate(comment_qs)),
+                                         content_type="text/csv")
+        response[
+            'Content-Disposition'] = f'attachment; filename="export_comments_user_{pk}_{datetime.datetime.now()}.csv"'
+    else:
+        raise Exception(f'Wrong format of export: {format_export}')
+
     return response

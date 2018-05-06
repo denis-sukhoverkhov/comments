@@ -33,7 +33,7 @@ class ExportCommentApiTest(TestCase):
                                       content_type=c_type,
                                       object_id=self.authorized_user.id)
 
-        response = self.client.get(f'/api/user/{self.authorized_user.id}/comment/history/export/')
+        response = self.client.get(f'/api/user/{self.authorized_user.id}/comment/history/export/csv/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEquals(
             response.get('Content-Disposition'),
@@ -52,10 +52,29 @@ class ExportCommentApiTest(TestCase):
                                       content_type=c_type,
                                       object_id=self.authorized_user.id)
 
-        response = self.client.get(f'/api/user/{self.authorized_user.id}/comment/history/export/?'
+        response = self.client.get(f'/api/user/{self.authorized_user.id}/comment/history/export/csv/?'
                                    f'date_start=09.05.2018&date_end=10.05.2018')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEquals(
             response.get('Content-Disposition'),
             f'attachment; filename="export_comments_user_{self.authorized_user.id}_{datetime.datetime.now()}.csv"'
+        )
+
+    @freeze_time("2018-05-01 00:00:00")
+    def test_export_csv(self):
+        c_type = ContentType.objects.get_for_model(self.authorized_user)
+        com1 = Comment.objects.create(body='com1',
+                                      user=self.authorized_user,
+                                      content_type=c_type,
+                                      object_id=self.authorized_user.id)
+        com2 = Comment.objects.create(body='com2',
+                                      user=self.authorized_user,
+                                      content_type=c_type,
+                                      object_id=self.authorized_user.id)
+
+        response = self.client.get(f'/api/user/{self.authorized_user.id}/comment/history/export/xml/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(
+            response.get('Content-Disposition'),
+            f'attachment; filename="export_comments_user_{self.authorized_user.id}_{datetime.datetime.now()}.xml"'
         )
