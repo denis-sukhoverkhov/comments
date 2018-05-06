@@ -31,6 +31,13 @@
 2. Open in browser [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 ### About interface
 + [Create new comment](http://127.0.0.1:8000/api/comment/)
++ Get comments top level for entities:
+    + comment - [(http://127.0.0.1:8000/api/comment/comment/2/)]((http://127.0.0.1:8000/api/comment/comment/2/)) where 
+    second `comment` - it is entity identifier and `2` - it is id of parent comment 
+    + post - [(http://127.0.0.1:8000/api/comment/post/2/)]((http://127.0.0.1:8000/api/comment/post/2/)) where 
+    `post` - it is entity identifier and `2` - it is id of entity
+    + user - [(http://127.0.0.1:8000/api/comment/user/2/)]((http://127.0.0.1:8000/api/comment/user/2/)) where 
+    `user` - it is entity identifier and `2` - it is id of entity 
  
 
 ## For developers
