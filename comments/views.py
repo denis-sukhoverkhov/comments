@@ -55,20 +55,21 @@ class RecursivelyCommentList(APIView):
         else:
             raise serializers.ValidationError(f'wrong entity name: {entity_name}')
 
-        raw_sql = f"""with recursive rec(id, body, user_id, created, object_id, content_type_id, level)
-as
-(
-  select t1.id, t1.body, t1.user_id, t1.created, t1.object_id, t1.content_type_id, 1 as level
-  from comments_comment as t1
-  where {condition1}
-  union all
-  select t2.id, t2.body, t2.user_id, t2.created, t2.object_id, t2.content_type_id, rec.level + 1 AS level
-  from comments_comment as t2, rec where t2.object_id = rec.id AND t2.content_type_id = {comment_content_type.id}
-)
-select * from rec
-{condition2}
-ORDER BY level, object_id
-        """
+        raw_sql = (
+            f"""with recursive rec(id, body, user_id, created, object_id, content_type_id, level)
+            as
+            (
+              select t1.id, t1.body, t1.user_id, t1.created, t1.object_id, t1.content_type_id, 1 as level
+              from comments_comment as t1
+              where {condition1}
+              union all
+              select t2.id, t2.body, t2.user_id, t2.created, t2.object_id, t2.content_type_id, rec.level + 1 AS level
+              from comments_comment as t2, rec where t2.object_id = rec.id AND t2.content_type_id = {comment_content_type.id}
+            )
+            select * from rec
+            {condition2}
+            ORDER BY level, object_id
+            """)
         with connection.cursor() as cursor:
             cursor.execute(raw_sql)
             res = dict_fetchall(cursor)
