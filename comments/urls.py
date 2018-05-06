@@ -10,6 +10,6 @@ urlpatterns = [
     url(r'^api/comment/$', CommentCreate.as_view(), name='create-comment'),
     url(r'^api/comment/tree/$', RecursivelyCommentList.as_view(), name='recursively-comments'),
     url(r'^api/user/(?P<pk>[0-9]+)/comment/history/$', UserHistoryCommentList.as_view(), name='history-comments'),
-    url(r'^api/user/(?P<pk>[0-9]+)/comment/history/export/(?P<format_export>[a-z_]+)/$', export_comments,
-        name='export-comments'),
+    url(r'^api/entity/(?P<entity>[a-z_]+)/(?P<pk>[0-9]+)/comment/history/export/(?P<format_export>[a-z_]+)/$',
+        export_comments, name='export-comments'),
 ]

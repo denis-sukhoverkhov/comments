@@ -122,10 +122,19 @@ def gen_xml(qs):
         yield '</comments>'
 
 
-def export_comments(request, pk, format_export):
+def export_comments(request, entity, pk, format_export):
     date_start = request.GET.get('date_start', None)
     date_end = request.GET.get('date_end', None)
-    comment_qs = Comment.objects.filter(user_id=pk)
+
+    if entity == User.__name__.lower():
+        comment_qs = Comment.objects.filter(user_id=pk)
+    elif entity == Comment.__name__.lower():
+        comment_qs = Comment.objects.filter(content_type=ContentType.objects.get_for_model(Comment), object_id=pk)
+    elif entity == Post.__name__.lower():
+        comment_qs = Comment.objects.filter(content_type=ContentType.objects.get_for_model(Post), object_id=pk)
+    else:
+        raise Exception(f'Wrong entity: {entity}')
+
     if date_start:
         date_start = datetime.datetime.strptime(date_start, '%d.%m.%Y')
         comment_qs.filter(created__gte=date_start)
@@ -134,10 +143,11 @@ def export_comments(request, pk, format_export):
         date_end = date_end.replace(hour=23, minute=59, second=59)
         comment_qs.filter(created__lte=date_end)
 
+    file_name_pattern = f'attachment; filename="export_comments_entity_{pk}_{datetime.datetime.now()}'
     if format_export == 'xml':
         response = StreamingHttpResponse(gen_xml(comment_qs), content_type='application/xml')
         response[
-            'Content-Disposition'] = f'attachment; filename="export_comments_user_{pk}_{datetime.datetime.now()}.xml"'
+            'Content-Disposition'] = f'{file_name_pattern}.xml"'
     elif format_export == 'csv':
         pseudo_buffer = Echo()
         writer = csv.writer(pseudo_buffer)
@@ -148,7 +158,7 @@ def export_comments(request, pk, format_export):
                                                            obj.created)) for idx, obj in enumerate(comment_qs)),
                                          content_type="text/csv")
         response[
-            'Content-Disposition'] = f'attachment; filename="export_comments_user_{pk}_{datetime.datetime.now()}.csv"'
+            'Content-Disposition'] = f'{file_name_pattern}.csv"'
     else:
         raise Exception(f'Wrong format of export: {format_export}')
 
