@@ -122,7 +122,7 @@ def gen_xml(qs):
         yield '</comments>'
 
 
-def streaming_csv_view(request, pk, format_export):
+def export_comments(request, pk, format_export):
     date_start = request.GET.get('date_start', None)
     date_end = request.GET.get('date_end', None)
     comment_qs = Comment.objects.filter(user_id=pk)
