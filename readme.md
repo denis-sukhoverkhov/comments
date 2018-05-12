@@ -48,7 +48,7 @@
 + Export user history to xml - [http://127.0.0.1:8000/api/entity/user/2/comment/history/export/xml/](http://127.0.0.1:8000/api/entity/user/2/comment/history/export/xml/)
 + Export comment history to xml - [http://127.0.0.1:8000/api/entity/comment/2/comment/history/export/xml/](http://127.0.0.1:8000/api/entity/comment/2/comment/history/export/xml/)
 + Export post history to xml - [http://127.0.0.1:8000/api/entity/post/2/comment/history/export/xml/](http://127.0.0.1:8000/api/entity/post/2/comment/history/export/xml/)
-
++ Get history operations for some comment, by comment id - [http://127.0.0.1:8000/api/comment/10/history/](http://127.0.0.1:8000/api/comment/10/history/)
 ### Some interfaces in Django admin
 + CRUD for comments - [http://127.0.0.1:8000/admin/comments/comment/](http://127.0.0.1:8000/admin/comments/comment/)
 + CRUD for users - [http://127.0.0.1:8000/admin/auth/user/](http://127.0.0.1:8000/admin/auth/user/)
