@@ -1,12 +1,16 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import post_save
 from django.test import TestCase
 from comments.models import Comment, Post
 from django.db import IntegrityError
 
+from comments.signals import save_comment_history
+
 
 class CommentModelTest(TestCase):
     def setUp(self):
+        post_save.disconnect(save_comment_history, sender=Comment)
         self.authorized_user = User.objects.create(username='admin',
                                                    password='admin',
                                                    email='admin@mail.ru',
