@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from comments.models import Comment, Post
+from comments.models import Comment, Post, CommentHistory
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -30,3 +30,10 @@ class HistoryCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'body', 'user', 'created')
+
+
+class CommentHistoryUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CommentHistory
+        fields = ('id', 'comment', 'body', 'author', 'created', 'is_deleted')

@@ -62,13 +62,6 @@ class Comment(TrashField):
 
         super().delete(using, keep_parents, trash, user)
 
-        if user is None:
-            raise Exception('Unrecognized user!')
-        CommentHistory.objects.create(comment=self,
-                                      body=self._original_body,
-                                      author=user,
-                                      is_deleted=True)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._original_body = self.body
@@ -76,14 +69,14 @@ class Comment(TrashField):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None, user=None):
 
-        # if inserting don't add the latest update at
         if self.id is not None:
             if user is None:
                 raise Exception('Unrecognized user!')
-            if self._original_body != self.body:
+            if self._original_body != self.body or self.trashed_at:
                 CommentHistory.objects.create(comment=self,
                                               body=self._original_body,
-                                              author=user)
+                                              author=user,
+                                              is_deleted=True if self.trashed_at else False)
 
         super().save(force_insert, force_update, using, update_fields)
 

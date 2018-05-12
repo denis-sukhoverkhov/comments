@@ -10,8 +10,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from comments.models import Comment, Post
-from comments.serrializers import CommentSerializer, HistoryCommentSerializer
+from comments.models import Comment, Post, CommentHistory
+from comments.serrializers import CommentSerializer, HistoryCommentSerializer, CommentHistoryUpdateSerializer
 from .libs.misc import dict_fetchall
 
 
@@ -162,3 +162,12 @@ def export_comments(request, entity, pk, format_export):
         raise Exception(f'Wrong format of export: {format_export}')
 
     return response
+
+
+class CommentHistoryView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk, format=None):
+        history_qs = CommentHistory.objects.filter(comment_id=pk)
+        ser = CommentHistoryUpdateSerializer(history_qs, many=True)
+        return Response(ser.data)

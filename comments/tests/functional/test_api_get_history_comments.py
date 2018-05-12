@@ -1,18 +1,14 @@
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.signals import post_save
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
-
-from comments.models import Post, Comment
-from comments.signals import save_comment_history
+from comments.models import Comment, CommentHistory
 
 
 class UserHistoryCommentsTest(TestCase):
 
     def setUp(self):
-        post_save.disconnect(save_comment_history, sender=Comment)
         self.authorized_user = User.objects.create(username='admin',
                                                    password='admin',
                                                    email='admin@mail.ru',
@@ -52,3 +48,18 @@ class UserHistoryCommentsTest(TestCase):
         response = self.client.get(f'/api/user/{self.authorized_user.id}/comment/history/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), len(comments_for_main_user))
+
+    def test_get_comment_history(self):
+        c_type = ContentType.objects.get_for_model(self.authorized_user)
+        comment = Comment.objects.create(body='parent',
+                                         user=self.authorized_user,
+                                         content_type=c_type,
+                                         object_id=self.authorized_user.id)
+        comment.body += 'new word'
+        comment.save(user=self.authorized_user)
+
+        comment.delete(user=self.authorized_user)
+
+        response = self.client.get(f'/api/comment/{comment.id}/history/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
