@@ -22,6 +22,7 @@
     ```
 3. Create db `createdb comments`
 4. Create tables `venv/bin/python3.6 manage.py migrate`
+5. Create data `venv/bin/python3.6 manage.py fill_db`
 
 ## Run tests
 `venv/bin/python3.6 manage.py test .`
